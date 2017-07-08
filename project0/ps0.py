@@ -9,6 +9,7 @@ def main():
 	# Comput computation here and printout to screen
 	print("x**y =", (x**y))
 	print("log(x) =", (log2(x)))
+	# Does not require casting if using comma, pretty neat
 
 	# Done
 	return
