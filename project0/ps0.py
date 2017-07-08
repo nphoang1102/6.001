@@ -11,8 +11,8 @@ def main():
    print("log(x) =", (log2(x)))
    # Does not require casting if using comma, pretty neat
 
-   # Done
-   return
+   # Done and terminate
+   return None
 
 # Invoke main
 main()
