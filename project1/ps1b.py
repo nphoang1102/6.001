@@ -1,3 +1,8 @@
+# 
+# Some more iteration with a slight twist of branching
+# 
+# - Hoang N -
+
 # Define main function
 def main():
    # Setup some constants first

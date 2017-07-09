@@ -1,3 +1,5 @@
+# This file was downloaded from MIT Open Courseware
+
 import numpy
 import pylab
 

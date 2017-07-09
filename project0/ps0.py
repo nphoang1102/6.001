@@ -1,3 +1,11 @@
+# 
+# Problem set 1 of 6.001, basically to make sure IDE is working
+# and external packages are properly installed (numpy and matplotlib)
+# Using the pkgtest.py.
+# 
+# - Hoang N -
+
+
 # Importing library to do logarithmatic
 from numpy import log2
 

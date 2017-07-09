@@ -1,3 +1,8 @@
+# 
+# Problem set 2 of 6.001. Practice simple iteration
+# 
+# - Hoang N -
+
 # Define main function
 def main():
    # Setup some constants first
