@@ -17,13 +17,18 @@ def main():
    guess_rate = int(round((high + low)/2.0))
    steps = 0
 
+   # Variables to store closest approximation
+   final_total_month = 0
+   final_guess_rate = 0.0
+
    # Prompting user for input
    annual_salary = float(input('Enter the starting salary: '))
 
    # Declare this here for condition checking below
    total_month = 0
 
-   # Start bisection search
+   # Start bisection search, 
+   # forcing the guessing to be as closest as possible
    while (abs(high-low) > 1):
       # One search interval done, update search terms and count up
       if steps:
@@ -33,10 +38,11 @@ def main():
             low = guess_rate
          guess_rate = int(round((high + low)/2.0))
 
-      # Reseting variables everytime for calculation months required
+      # Reseting variables for every new bisection search step
       total_month = 0
       current_savings = 0.0
       monthly_salary = annual_salary/12.0;
+      steps += 1
 
       # Finding the months
       while (current_savings < total_cost):
@@ -47,12 +53,14 @@ def main():
             monthly_salary += (monthly_salary*semi_annual_raise)
          current_savings += (current_savings*r/12.0)
          current_savings += (monthly_salary*guess_rate/10000.0)
-      
-      steps += 1
-      print('Debug', steps, guess_rate, high, low, total_month)
+
+      # Storing the closest value here
+      if (total_month == 36):
+         final_total_month = total_month
+         final_guess_rate = guess_rate
 
    # Display result and terminate
-   if (total_month <= 36):
+   if (final_total_month == 36):
       print('Best saving rate:', float(guess_rate/10000.0))
       print('Steps in bisection search:', steps)
    else:
