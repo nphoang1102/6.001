@@ -4,3 +4,10 @@
 # - Hoang N -
 
 # Define main function
+def main():
+
+   # Display result and terminate
+   return None
+
+# Invoke main
+main()
