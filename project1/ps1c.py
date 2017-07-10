@@ -32,6 +32,12 @@ def main():
    while (abs(high-low) > 1):
       # One search interval done, update search terms and count up
       if steps:
+         # It is quite significant to use <= here instead of < only
+         # now that I think about it hard enough. So theoratically,
+         # when the bisection search found a rate that fit, it should
+         # try to reduce some precision to actually find the optimal
+         # value instead of increasing it, thus explain the <= here
+         # instead of <. Also < here means <= at the else below.
          if (total_month <= 36):
             high = guess_rate
          else:
