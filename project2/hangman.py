@@ -1,7 +1,6 @@
 # Problem Set 2, hangman.py
-# Name: 
-# Collaborators:
-# Time spent:
+# Name: Hoang N
+# Time spent: 30 mins
 
 # Hangman Game
 # -----------------------------------
@@ -14,7 +13,7 @@ import string
 
 WORDLIST_FILENAME = "words.txt"
 
-
+# Importing the words from the text file and return them
 def load_words():
     """
     Returns a list of valid words. Words are strings of lowercase letters.
@@ -32,8 +31,7 @@ def load_words():
     print("  ", len(wordlist), "words loaded.")
     return wordlist
 
-
-
+# Choose a random word from an available wordlist
 def choose_word(wordlist):
     """
     wordlist (list): list of words (strings)
@@ -50,43 +48,60 @@ def choose_word(wordlist):
 # so that it can be accessed from anywhere in the program
 wordlist = load_words()
 
+# Some debug parameters
+# secret_word = 'apple'
+# letters_guessed = ['e', 'i', 'k', 'p', 'r', 's']
 
+# Check if the word has been guessed or not
 def is_word_guessed(secret_word, letters_guessed):
-    '''
-    secret_word: string, the word the user is guessing; assumes all letters are
-      lowercase
-    letters_guessed: list (of letters), which letters have been guessed so far;
-      assumes that all letters are lowercase
-    returns: boolean, True if all the letters of secret_word are in letters_guessed;
-      False otherwise
-    '''
-    # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    # Iterating through the secret word and check if contained in geussed word
+    for char in secret_word:
+        if char in letters_guessed:
+            continue
+        else:
+            return False
+    
+    # Only return true if secret words are all contained in letters guessed
+    return True
 
+# Test case for is_word_guessed funtion, gonna leave it chilling here 
+# print(is_word_guessed(secret_word, letters_guessed))
 
-
+# Get the guessed words up to this point
 def get_guessed_word(secret_word, letters_guessed):
-    '''
-    secret_word: string, the word the user is guessing
-    letters_guessed: list (of letters), which letters have been guessed so far
-    returns: string, comprised of letters, underscores (_), and spaces that represents
-      which letters in secret_word have been guessed so far.
-    '''
-    # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    # Storing variable for return here
+    guessed_word = ''
 
+    # If character has been guessed, display it, else display an underscore
+    for char in secret_word:
+        if char in letters_guessed:
+            guessed_word += char
+        else:
+            guessed_word += '_'
 
+    # Return guessed word up to this point
+    return guessed_word
 
+# Test case for get_guessed_word function, gonna leave it chilling here
+# print(get_guessed_word(secret_word, letters_guessed))
+
+# Get whatever letters left that are still available for guessing
 def get_available_letters(letters_guessed):
-    '''
-    letters_guessed: list (of letters), which letters have been guessed so far
-    returns: string (of letters), comprised of letters that represents which letters have not
-      yet been guessed.
-    '''
-    # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
-    
-    
+    # Storing variable for return here
+    available_letters = ''
+
+    # If character has been guessed, ignore it, else add it to the available letter
+    for char in string.ascii_lowercase:
+        if char in letters_guessed:
+            continue
+        else:
+            available_letters += char
+
+    # Return list of available letter here
+    return available_letters
+
+# Test case fir get_available_letters function, gonna leave it chilling here
+# print(get_available_letters(letters_guessed))
 
 def hangman(secret_word):
     '''
