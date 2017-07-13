@@ -1,6 +1,6 @@
 # Problem Set 2, hangman.py
 # Name: Hoang N
-# Time spent: 80 mins
+# Time spent: 85 mins
 
 # Hangman Game
 # -----------------------------------
@@ -75,9 +75,9 @@ def get_guessed_word(secret_word, letters_guessed):
     # If character has been guessed, display it, else display an underscore
     for char in secret_word:
         if char in letters_guessed:
-            guessed_word += char
+            guessed_word += (char + ' ')
         else:
-            guessed_word += '_'
+            guessed_word += '_ '
 
     # Return guessed word up to this point
     return guessed_word
@@ -108,6 +108,7 @@ def hangman(secret_word):
     warnings = 3
     guesses = 6
     letters_guessed = ''
+    vowels = 'aeiou'
 
     # Welcome text
     print('Welcome to the game Hangman')
@@ -137,17 +138,25 @@ def hangman(secret_word):
         
         # Check for input char next
         else:
+            # Check for already guessed letter
             if guessed_char in letters_guessed:
-                if warnings:
-                    warnings -= 1
-                else:
-                    guesses -= 1
+                if guessed_char not in secret_word:
+                    if warnings:
+                        warnings -= 1
+                    else:
+                        guesses -= 1
                 print("Oops! You've already guessed that letter. You now have", warnings, "warnings")
+            
+            # If guessed letter is indeed in secret word
             elif guessed_char in secret_word:
                 letters_guessed += guessed_char
                 print('Good guess:', get_guessed_word(secret_word, letters_guessed))
+            
+            # If guessed letter is not in secret word
             else:
                 letters_guessed += guessed_char
+                if guessed_char in vowels:
+                    guesses -= 1
                 guesses -= 1
                 print("Oops! This character is not in my word:", get_guessed_word(secret_word, letters_guessed))
 
@@ -240,8 +249,8 @@ if __name__ == "__main__":
     # To test part 2, comment out the pass line above and
     # uncomment the following two lines.
     
-    # secret_word = choose_word(wordlist)
-    secret_word = 'apple'
+    secret_word = choose_word(wordlist)
+    # secret_word = 'apple'
     hangman(secret_word)
 
 ###############
