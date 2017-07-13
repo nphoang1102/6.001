@@ -1,6 +1,6 @@
 # Problem Set 2, hangman.py
 # Name: Hoang N
-# Time spent: 85 mins
+# Time spent: 95 mins
 
 # Hangman Game
 # -----------------------------------
@@ -134,18 +134,17 @@ def hangman(secret_word):
                 warnings -= 1
             else:
                 guesses -= 1
-            print('Oops! That is not a valid letter. You have', warnings, 'left:', get_guessed_word(secret_word, letters_guessed))
+            print('Oops! That is not a valid letter. You have', warnings, 'warnings left:', get_guessed_word(secret_word, letters_guessed))
         
         # Check for input char next
         else:
             # Check for already guessed letter
             if guessed_char in letters_guessed:
-                if guessed_char not in secret_word:
-                    if warnings:
-                        warnings -= 1
-                    else:
-                        guesses -= 1
-                print("Oops! You've already guessed that letter. You now have", warnings, "warnings")
+                if warnings:
+                    warnings -= 1
+                else:
+                    guesses -= 1
+                print("Oops! You've already guessed that letter. You now have", warnings, "warnings left:", get_guessed_word(secret_word, letters_guessed))
             
             # If guessed letter is indeed in secret word
             elif guessed_char in secret_word:
@@ -244,13 +243,11 @@ def hangman_with_hints(secret_word):
 
 
 if __name__ == "__main__":
-    # pass
-
     # To test part 2, comment out the pass line above and
     # uncomment the following two lines.
     
     secret_word = choose_word(wordlist)
-    # secret_word = 'apple'
+    # secret_word = 'else'
     hangman(secret_word)
 
 ###############
