@@ -40,7 +40,7 @@ def load_words():
     wordlist = []
     for line in inFile:
         wordlist.append(line.strip().lower())
-    print("  ", len(wordlist), "words loaded.")
+    print("  ", len(wordlist), "words loaded.\n")
     return wordlist
 
 def get_frequency_dict(sequence):
@@ -234,13 +234,12 @@ def play_hand(hand, word_list):
 
     # Display final score and terminate
     print('Total score:', score, 'points')
-    return None
+    return score
 
 # Test case, chilling here
 # hand = {'a':1, 'c':1, 'i':1, 'f': 1, '*':1, 't':1, 'x': 1}
 # word_list = load_words()
 # play_hand(hand, word_list)
-
 
 
 #
@@ -279,38 +278,52 @@ def substitute_hand(hand, letter):
 # print(substitute_hand(hand, 'a'))
     
 def play_game(word_list):
-    """
-    Allow the user to play a series of hands
+    # Get some basic stuffs setup first
+    hand = deal_hand(HAND_SIZE)
+    points = 0
+    track = {}
+    substituted = False
+    keep_hand = False
 
-    * Asks the user to input a total number of hands
+    # Prompting players for number of hand
+    rounds = int(input('Enter total number of hands: '))
 
-    * Accumulates the score for each hand into a total score for the 
-      entire series
- 
-    * For each hand, before playing, ask the user if they want to substitute
-      one letter for another. If the user inputs 'yes', prompt them for their
-      desired letter. This can only be done once during the game. Once the
-      substitue option is used, the user should not be asked if they want to
-      substitute letters in the future.
+    # Start the game to desired goal
+    while rounds:
+        # Prompt for substitution if not already
+        print('Current hand: ', end = '')
+        display_hand(hand)
+        if not substituted:
+            sub_prompt = input("Would you like to substitute a letter? ").lower()
+            if sub_prompt == "yes":
+                substituted = True
+                letter = input("Which letter would you like to replace: ").lower()
+                hand = substitute_hand(hand, letter)
 
-    * For each hand, ask the user if they would like to replay the hand.
-      If the user inputs 'yes', they will replay the hand and keep 
-      the better of the two scores for that hand.  This can only be done once 
-      during the game. Once the replay option is used, the user should not
-      be asked if they want to replay future hands. Replaying the hand does
-      not count as one of the total number of hands the user initially
-      wanted to play.
+        # Play the game, deal new hand but keep the previous one
+        rounds -= 1
+        round_score = play_hand(hand, word_list)
+        if track.get(str(rounds), 0) < round_score:
+            track[str(rounds)] = round_score
+        print('Total score for this hand:', round_score, 'points')
+        print('----------------------------------')
+        previous_hand = dict(hand)
+        hand = deal_hand(HAND_SIZE)
 
-            * Note: if you replay a hand, you do not get the option to substitute
-                    a letter - you must play whatever hand you just had.
-      
-    * Returns the total score for the series of hands
 
-    word_list: list of lowercase strings
-    """
-    
-    print("play_game not implemented.") # TO DO... Remove this line when you implement this function
-    
+        # Prompt for keeping current hand
+        if not keep_hand and rounds:
+            keep_prompt = input("Would you like to replay hand? ").lower()
+            if keep_prompt == "yes":
+                keep_hand = True
+                rounds += 1
+                hand = previous_hand
+
+    # Displaying final score and terminate
+    for key in track:
+        points += track.get(key)
+    print('Total score over all hands:', points, 'points')
+    return None
 
 
 #
@@ -318,6 +331,6 @@ def play_game(word_list):
 # Do not remove the "if __name__ == '__main__':" line - this code is executed
 # when the program is run directly, instead of through an import statement
 #
-# if __name__ == '__main__':
-#     word_list = load_words()
-#     play_game(word_list)
+if __name__ == '__main__':
+    word_list = load_words()
+    play_game(word_list)
