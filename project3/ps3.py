@@ -67,32 +67,20 @@ def get_frequency_dict(sequence):
 # Problem #1: Scoring a word
 #
 def get_word_score(word, n):
-    """
-    Returns the score for a word. Assumes the word is a
-    valid word.
+    # Clean word first and setup some storage here
+    s = word.lower()
+    comp1 = 0
+    comp2 = 0
 
-    You may assume that the input word is always either a string of letters, 
-    or the empty string "". You may not assume that the string will only contain 
-    lowercase letters, so you will have to handle uppercase and mixed case strings 
-    appropriately. 
+    # First score component based on scrabble letter values
+    for char in s:
+        comp1 += SCRABBLE_LETTER_VALUES.get(char, 0)
 
-	The score for a word is the product of two components:
+    # Calculating the length reward, beware the parentheses
+    comp2 = max(1, (7 * len(s) - 3 * (n - len(s))))
 
-	The first component is the sum of the points for letters in the word.
-	The second component is the larger of:
-            1, or
-            7*wordlen - 3*(n-wordlen), where wordlen is the length of the word
-            and n is the hand length when the word was played
-
-	Letters are scored as in Scrabble; A is worth 1, B is
-	worth 3, C is worth 3, D is worth 2, E is worth 1, and so on.
-
-    word: string
-    n: int >= 0
-    returns: int >= 0
-    """
-    
-    pass  # TO DO... Remove this line when you implement this function
+    # Return word score and terminate
+    return comp1 * comp2
 
 #
 # Make sure you understand how this function works and what it does!
@@ -136,7 +124,7 @@ def deal_hand(n):
     hand={}
     num_vowels = int(math.ceil(n / 3))
 
-    for i in range(num_vowels):
+    for i in range(num_vowels - 1):
         x = random.choice(VOWELS)
         hand[x] = hand.get(x, 0) + 1
     
@@ -144,48 +132,63 @@ def deal_hand(n):
         x = random.choice(CONSONANTS)
         hand[x] = hand.get(x, 0) + 1
     
+    # Add one wild card here
+    hand['*'] = 1
+
     return hand
 
 #
 # Problem #2: Update a hand by removing letters
 #
 def update_hand(hand, word):
-    """
-    Does NOT assume that hand contains every letter in word at least as
-    many times as the letter appears in word. Letters in word that don't
-    appear in hand should be ignored. Letters that appear in word more times
-    than in hand should never result in a negative count; instead, set the
-    count in the returned hand to 0 (or remove the letter from the
-    dictionary, depending on how your code is structured). 
+    # Defining new hand to return and clean up input word just in case
+    new_hand = dict(hand)
+    s = word.lower()
 
-    Updates the hand: uses up the letters in the given word
-    and returns the new hand, without those letters in it.
+    # Iterating through the word and removing characters from hand
+    for char in s:
+        new_hand[char] = new_hand.get(char, 0) - 1
+        if (new_hand.get(char) < 1):
+            del(new_hand[char])
 
-    Has no side effects: does not modify hand.
-
-    word: string
-    hand: dictionary (string -> int)    
-    returns: dictionary (string -> int)
-    """
-
-    pass  # TO DO... Remove this line when you implement this function
+    # Return the updated hand and terminate
+    return new_hand
 
 #
 # Problem #3: Test word validity
 #
 def is_valid_word(word, hand, word_list):
-    """
-    Returns True if word is in the word_list and is entirely
-    composed of letters in the hand. Otherwise, returns False.
-    Does not mutate hand or word_list.
-   
-    word: string
-    hand: dictionary (string -> int)
-    word_list: list of lowercase strings
-    returns: boolean
-    """
+    # Define temporay hand for mutating and clean up word
+    s = word.lower()
+    hand_check = dict(hand)
 
-    pass  # TO DO... Remove this line when you implement this function
+    # Check if word is in fact in the word_list
+    if ('*' not in s):
+        if s not in word_list:
+            return False
+    # Now check for the case of wild card, basically clone
+    # the initial word and check vowel by vowel
+    else:
+        wild_card = s
+        cnt = 0
+        for v in VOWELS:
+            replace = wild_card[0:wild_card.index('*')] + v + wild_card[wild_card.index('*') + 1:]
+            cnt += 1
+            if replace in word_list:
+                break
+        # Invalid word if no matches after iterating through all vowels
+        if cnt == len(VOWELS):
+            return False
+
+    # Okay word is good, check if the player constructs this 
+    # based on whatever (s)he is having on hand
+    for char in s:
+        hand_check[char] = hand_check.get(char, 0) - 1
+        if (hand_check.get(char) < 0):
+            return False
+
+    # If all test passes, then the word is valid
+    return True
 
 #
 # Problem #5: Playing a hand
