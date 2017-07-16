@@ -162,33 +162,28 @@ def is_valid_word(word, hand, word_list):
     s = word.lower()
     hand_check = dict(hand)
 
-    # Check if word is in fact in the word_list
-    if ('*' not in s):
-        if s not in word_list:
-            return False
-    # Now check for the case of wild card, basically clone
-    # the initial word and check vowel by vowel
-    else:
-        wild_card = s
-        cnt = 0
-        for v in VOWELS:
-            replace = wild_card[0:wild_card.index('*')] + v + wild_card[wild_card.index('*') + 1:]
-            cnt += 1
-            if replace in word_list:
-                break
-        # Invalid word if no matches after iterating through all vowels
-        if cnt == len(VOWELS):
-            return False
-
-    # Okay word is good, check if the player constructs this 
+    # Check if the player constructs this 
     # based on whatever (s)he is having on hand
     for char in s:
         hand_check[char] = hand_check.get(char, 0) - 1
         if (hand_check.get(char) < 0):
             return False
 
-    # If all test passes, then the word is valid
-    return True
+    # Check if word is in fact in the word_list
+    if ('*' not in s):
+        if s in word_list:
+            return True
+    # Now check for the case of wild card, basically clone
+    # the initial word and check vowel by vowel
+    else:
+        wild_card = s
+        for v in VOWELS:
+            replace = wild_card[0:wild_card.index('*')] + v + wild_card[wild_card.index('*') + 1:]
+            if replace in word_list:
+                return True
+
+    # What are you doing here you invalid input?
+    return False
 
 #
 # Problem #5: Playing a hand
