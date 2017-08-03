@@ -1,7 +1,7 @@
 # Problem Set 4B
 # Name: Hoang Nguyen
 # Collaborators:
-# Time Spent: 10
+# Time Spent: 30
 
 import string
 
@@ -73,21 +73,28 @@ class Message(object):
     def get_valid_words(self):
         return self.valid_words
 
+    # Return a dictionary foor cipher message
     def build_shift_dict(self, shift):
-        '''
-        Creates a dictionary that can be used to apply a cipher to a letter.
-        The dictionary maps every uppercase and lowercase letter to a
-        character shifted down the alphabet by the input shift. The dictionary
-        should have 52 keys of all the uppercase letters and all the lowercase
-        letters only.        
-        
-        shift (integer): the amount by which to shift every letter of the 
-        alphabet. 0 <= shift < 26
 
-        Returns: a dictionary mapping a letter (string) to 
-                 another letter (string). 
-        '''
-        pass #delete this line and replace with your code here
+        # For return
+        shift_dict = {}
+
+        # Cipher upper case first
+        for i in range(len(string.ascii_uppercase)):
+            cipher = i + shift
+            if (cipher > 25):
+                cipher -= 26
+            shift_dict[string.ascii_uppercase[i]] = string.ascii_uppercase[cipher]
+
+        # Then cipher lower case
+        for i in range(len(string.ascii_lowercase)):
+            cipher = i + shift
+            if (cipher > 25):
+                cipher -= 26
+            shift_dict[string.ascii_lowercase[i]] = string.ascii_lowercase[cipher]
+
+        # Return and terminate
+        return shift_dict
 
     def apply_shift(self, shift):
         '''
@@ -101,7 +108,21 @@ class Message(object):
         Returns: the message text (string) in which every character is shifted
              down the alphabet by the input shift
         '''
-        pass #delete this line and replace with your code here
+
+        # Vaiables for return and conding
+        cipher_string = ''
+        shift_dict = self.build_shift_dict(shift)
+
+        # Start encoding
+        for char in self.message_text:
+            cond = shift_dict.get(char, 0)
+            if cond:
+                cipher_string += cond
+            else:
+                cipher_string += char
+
+        # Return and terminate
+        return cipher_string
 
 class PlaintextMessage(Message):
     def __init__(self, text, shift):
@@ -191,6 +212,12 @@ class CiphertextMessage(Message):
 
 if __name__ == '__main__':
 
+    test = Message(get_story_string())
+    print(test.build_shift_dict(-1))
+    print(test.message_text)
+    print(type(test.message_text))
+    print(test.apply_shift(1))
+
 #    #Example test case (PlaintextMessage)
 #    plaintext = PlaintextMessage('hello', 2)
 #    print('Expected Output: jgnnq')
@@ -205,4 +232,3 @@ if __name__ == '__main__':
 
     #TODO: best shift value and unencrypted story 
     
-    pass #delete this line and replace with your code here
