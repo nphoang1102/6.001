@@ -1,7 +1,7 @@
 # Problem Set 4B
-# Name: <your name here>
+# Name: Hoang Nguyen
 # Collaborators:
-# Time Spent: x:xx
+# Time Spent: 10
 
 import string
 
@@ -60,34 +60,18 @@ def get_story_string():
 WORDLIST_FILENAME = 'words.txt'
 
 class Message(object):
+    # Init class, holds input text and list of valid words
     def __init__(self, text):
-        '''
-        Initializes a Message object
-                
-        text (string): the message's text
+        self.message_text = text
+        self.valid_words = load_words(WORDLIST_FILENAME)
 
-        a Message object has two attributes:
-            self.message_text (string, determined by input text)
-            self.valid_words (list, determined using helper function load_words)
-        '''
-        pass #delete this line and replace with your code here
-
+    # Getter for message text
     def get_message_text(self):
-        '''
-        Used to safely access self.message_text outside of the class
-        
-        Returns: self.message_text
-        '''
-        pass #delete this line and replace with your code here
+        return self.message_text
 
+    # Getter for valid words
     def get_valid_words(self):
-        '''
-        Used to safely access a copy of self.valid_words outside of the class.
-        This helps you avoid accidentally mutating class attributes.
-        
-        Returns: a COPY of self.valid_words
-        '''
-        pass #delete this line and replace with your code here
+        return self.valid_words
 
     def build_shift_dict(self, shift):
         '''
