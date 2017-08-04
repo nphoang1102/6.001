@@ -1,7 +1,6 @@
 # Problem Set 4B
 # Name: Hoang Nguyen
-# Collaborators:
-# Time Spent: 30
+# Time Spent: 45
 
 import string
 
@@ -71,7 +70,7 @@ class Message(object):
 
     # Getter for valid words
     def get_valid_words(self):
-        return self.valid_words
+        return list(self.valid_words)
 
     # Return a dictionary foor cipher message
     def build_shift_dict(self, shift):
@@ -96,18 +95,8 @@ class Message(object):
         # Return and terminate
         return shift_dict
 
+    # Applying the shift cipher to the current message text
     def apply_shift(self, shift):
-        '''
-        Applies the Caesar Cipher to self.message_text with the input shift.
-        Creates a new string that is self.message_text shifted down the
-        alphabet by some number of characters determined by the input shift        
-        
-        shift (integer): the shift with which to encrypt the message.
-        0 <= shift < 26
-
-        Returns: the message text (string) in which every character is shifted
-             down the alphabet by the input shift
-        '''
 
         # Vaiables for return and conding
         cipher_string = ''
@@ -126,71 +115,36 @@ class Message(object):
 
 class PlaintextMessage(Message):
     def __init__(self, text, shift):
-        '''
-        Initializes a PlaintextMessage object        
-        
-        text (string): the message's text
-        shift (integer): the shift associated with this message
+        # Init class, inherit from message then create encryption
+        # library, direction and message
+        Message.__init__(self, text)
+        self.shift = shift
+        self.encryption_dict = self.build_shift_dict(shift)
+        self.message_text_encrypted = self.apply_shift(shift)
 
-        A PlaintextMessage object inherits from Message and has five attributes:
-            self.message_text (string, determined by input text)
-            self.valid_words (list, determined using helper function load_words)
-            self.shift (integer, determined by input shift)
-            self.encryption_dict (dictionary, built using shift)
-            self.message_text_encrypted (string, created using shift)
-
-        '''
-        pass #delete this line and replace with your code here
-
+    # Getter for shift value
     def get_shift(self):
-        '''
-        Used to safely access self.shift outside of the class
-        
-        Returns: self.shift
-        '''
-        pass #delete this line and replace with your code here
+        return self.shift
 
+    # Getter for encryption dictionary generated from shift value
     def get_encryption_dict(self):
-        '''
-        Used to safely access a copy self.encryption_dict outside of the class
-        
-        Returns: a COPY of self.encryption_dict
-        '''
-        pass #delete this line and replace with your code here
+        return dict(self.encryption_dict)
 
+    # Getter for encrypted text
     def get_message_text_encrypted(self):
-        '''
-        Used to safely access self.message_text_encrypted outside of the class
-        
-        Returns: self.message_text_encrypted
-        '''
-        pass #delete this line and replace with your code here
+        return self.message_text_encrypted
 
+    # Setter to change set shift value, also rebuilt dictionary
+    # and encrypted message
     def change_shift(self, shift):
-        '''
-        Changes self.shift of the PlaintextMessage and updates other 
-        attributes determined by shift.        
-        
-        shift (integer): the new shift that should be associated with this message.
-        0 <= shift < 26
-
-        Returns: nothing
-        '''
-        pass #delete this line and replace with your code here
+        self.shift = shift
+        self.encryption_dict = self.build_shift_dict(shift)
+        self.message_text_encrypted = self.apply_shift(shift)
 
 
 class CiphertextMessage(Message):
     def __init__(self, text):
-        '''
-        Initializes a CiphertextMessage object
-                
-        text (string): the message's text
-
-        a CiphertextMessage object has two attributes:
-            self.message_text (string, determined by input text)
-            self.valid_words (list, determined using helper function load_words)
-        '''
-        pass #delete this line and replace with your code here
+        Message.__init__(self, text)
 
     def decrypt_message(self):
         '''
@@ -212,11 +166,11 @@ class CiphertextMessage(Message):
 
 if __name__ == '__main__':
 
-    test = Message(get_story_string())
-    print(test.build_shift_dict(-1))
-    print(test.message_text)
-    print(type(test.message_text))
-    print(test.apply_shift(1))
+    test = PlaintextMessage(get_story_string(), 1)
+    print(test.get_message_text_encrypted())
+    test.change_shift(-3)
+    print('New story man')
+    print(test.get_message_text_encrypted())
 
 #    #Example test case (PlaintextMessage)
 #    plaintext = PlaintextMessage('hello', 2)
