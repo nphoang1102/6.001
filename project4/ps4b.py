@@ -151,12 +151,8 @@ class CiphertextMessage(Message):
             shift_search = self.apply_shift(i).lower().split(" ")
 
             # Clean up the split list first
-            for e in shift_search:
-                e = e.strip(" !@#$%^&*()-_+={}[]|\:;'<>?,./\"")
-
-            # Start checking points
-            for e in shift_search:
-                if e in self.valid_words:
+            for word in shift_search:
+                if is_word(self.valid_words, word):
                     itr_count += 1
 
             # Storing our result here
@@ -192,19 +188,4 @@ if __name__ == '__main__':
     # Test 4 for CiphertextMessage class
     test4 = CiphertextMessage(get_story_string())
     print(test4.decrypt_message())
-
-
-#    #Example test case (PlaintextMessage)
-#    plaintext = PlaintextMessage('hello', 2)
-#    print('Expected Output: jgnnq')
-#    print('Actual Output:', plaintext.get_message_text_encrypted())
-#
-#    #Example test case (CiphertextMessage)
-#    ciphertext = CiphertextMessage('jgnnq')
-#    print('Expected Output:', (24, 'hello'))
-#    print('Actual Output:', ciphertext.decrypt_message())
-
-    #TODO: WRITE YOUR TEST CASES HERE
-
-    #TODO: best shift value and unencrypted story 
     
