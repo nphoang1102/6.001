@@ -15,14 +15,14 @@ def load_words(file_name):
     Depending on the size of the word list, this function may
     take a while to finish.
     '''
-    print("Loading word list from file...")
+    # print("Loading word list from file...")
     # inFile: file
     inFile = open(file_name, 'r')
     # wordlist: list of strings
     wordlist = []
     for line in inFile:
         wordlist.extend([word.lower() for word in line.split(' ')])
-    print("  ", len(wordlist), "words loaded.")
+    # print("  ", len(wordlist), "words loaded.")
     return wordlist
 
 def is_word(word_list, word):
@@ -90,7 +90,7 @@ class Message(object):
     # Applying the shift cipher to the current message text
     def apply_shift(self, shift):
 
-        # Vaiables for return and conding
+        # Vaiables for return and enconding
         cipher_string = ''
         shift_dict = self.build_shift_dict(shift)
 
@@ -169,23 +169,46 @@ class CiphertextMessage(Message):
 
 if __name__ == '__main__':
 
-    # # Test 1 for PlaintextMessage class
-    # test1 = PlaintextMessage(string.ascii_lowercase, 12)
-    # print(test1.get_message_text_encrypted())
-    # test1.change_shift(-1)
-    # print(test1.get_message_text_encrypted())
+    # # Test 1
+    print('Test 1')
+    text1 = 'Hello World!'
+    en_text1 = PlaintextMessage(text1, 987).get_message_text_encrypted()
+    test1 = CiphertextMessage(en_text1)
+    print('The encrypted text is', en_text1)
+    print('The original text is', test1.decrypt_message())
+    print('Expected:', text1)
+    print('Test 1 done')
+    print()
 
-    # # Test 2 for PlaintextMessage class
-    # text2 = 'mnopqrstuvwxyzabcdefghijkl'
-    # test2 = PlaintextMessage(text2, -12)
-    # print(test2.get_message_text_encrypted())
+    # Test 2
+    print('Test 2')
+    text2 = "What's good my nigga? Yo down with the hood dog? Brothas fo life homie!"
+    en_text2 = PlaintextMessage(text2, -987686).get_message_text_encrypted()
+    test2 = CiphertextMessage(en_text2)
+    print('The encrypted text is', en_text2)
+    print('The original text is', test2.decrypt_message())
+    print('Expected:', text2)
+    print('Test 2 done')
+    print()
 
-    # # Test 3 for PlaintextMessage ckass
-    # text3 = '“Stop!” he yelled. “You’ve got two flat tires!”'
-    # test3 = PlaintextMessage(text3, 4)
-    # print(test3.get_message_text_encrypted())
+    # Test 3 for PlaintextMessage class
+    print('Test 3')
+    text3 = '“Stop!” he yelled. “You’ve got two flat tires!”'
+    en_text3 = PlaintextMessage(text3, 15).get_message_text_encrypted()
+    test3 = CiphertextMessage(en_text3)
+    print('The encrypted text is', en_text3)
+    print('The original text is', test3.decrypt_message())
+    print('Expected:', text3)
+    print('Test 3 done')
+    print()
 
     # Test 4 for CiphertextMessage class
-    test4 = CiphertextMessage(get_story_string())
+    print('Test 4')
+    en_text4 = get_story_string()
+    test4 = CiphertextMessage(en_text4)
+    print('The encrypted text is')
+    print(en_text4)
+    print('The original text is')
     print(test4.decrypt_message())
+    print('Test 4 done')
     

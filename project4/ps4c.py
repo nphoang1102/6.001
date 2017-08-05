@@ -1,7 +1,6 @@
 # Problem Set 4C
-# Name: <your name here>
-# Collaborators:
-# Time Spent: x:xx
+# Name: Hoang Nguyen
+# Time Spent: 50
 
 import string
 from ps4a import get_permutations
@@ -60,100 +59,89 @@ CONSONANTS_LOWER = 'bcdfghjklmnpqrstvwxyz'
 CONSONANTS_UPPER = 'BCDFGHJKLMNPQRSTVWXYZ'
 
 class SubMessage(object):
+
+    # Class init, holding the message text and list of valid words
     def __init__(self, text):
-        '''
-        Initializes a SubMessage object
-                
-        text (string): the message's text
-
-        A SubMessage object has two attributes:
-            self.message_text (string, determined by input text)
-            self.valid_words (list, determined using helper function load_words)
-        '''
-        pass #delete this line and replace with your code here
+        self.message_text = text
+        self.valid_words = load_words(WORDLIST_FILENAME)
     
+    # Return the original message text
     def get_message_text(self):
-        '''
-        Used to safely access self.message_text outside of the class
-        
-        Returns: self.message_text
-        '''
-        pass #delete this line and replace with your code here
+        return self.message_text
 
+    # Return a clone list of valid words in case anyone tinker with it
     def get_valid_words(self):
-        '''
-        Used to safely access a copy of self.valid_words outside of the class.
-        This helps you avoid accidentally mutating class attributes.
-        
-        Returns: a COPY of self.valid_words
-        '''
-        pass #delete this line and replace with your code here
-                
-    def build_transpose_dict(self, vowels_permutation):
-        '''
-        vowels_permutation (string): a string containing a permutation of vowels (a, e, i, o, u)
-        
-        Creates a dictionary that can be used to apply a cipher to a letter.
-        The dictionary maps every uppercase and lowercase letter to an
-        uppercase and lowercase letter, respectively. Vowels are shuffled 
-        according to vowels_permutation. The first letter in vowels_permutation 
-        corresponds to a, the second to e, and so on in the order a, e, i, o, u.
-        The consonants remain the same. The dictionary should have 52 
-        keys of all the uppercase letters and all the lowercase letters.
-
-        Example: When input "eaiuo":
-        Mapping is a->e, e->a, i->i, o->u, u->o
-        and "Hello World!" maps to "Hallu Wurld!"
-
-        Returns: a dictionary mapping a letter (string) to 
-                 another letter (string). 
-        '''
-        
-        pass #delete this line and replace with your code here
+        return list(self.valid_words)
     
+    # Build our substitution dictionary based on the input vowels permutation
+    def build_transpose_dict(self, vowels_permutation):
+        
+        # Dictionary for return
+        vowel_map = {}
+
+        # Start iterating through the permutation and substitute for vowels
+        for i in range(len(vowels_permutation)):
+            vowel_map[VOWELS_LOWER[i]] = vowels_permutation[i].lower()
+            vowel_map[VOWELS_UPPER[i]] = vowels_permutation[i].upper()
+
+        # Put in consonants
+        for char in CONSONANTS_LOWER:
+            vowel_map[char] = char
+            vowel_map[char.upper()] = char.upper()
+
+        # Return dictionary and terminate function
+        return vowel_map
+
+    # Apply the substitution based on the input dictionary
     def apply_transpose(self, transpose_dict):
-        '''
-        transpose_dict (dict): a transpose dictionary
-        
-        Returns: an encrypted version of the message text, based 
-        on the dictionary
-        '''
-        
-        pass #delete this line and replace with your code here
+        # Vaiables for return
+        cipher_string = ''
+
+        # Start encoding
+        for char in self.message_text:
+            cond = transpose_dict.get(char, 0)
+            if cond:
+                cipher_string += cond
+            else:
+                cipher_string += char
+
+        # Return and terminate
+        return cipher_string
         
 class EncryptedSubMessage(SubMessage):
+    # Init function
     def __init__(self, text):
-        '''
-        Initializes an EncryptedSubMessage object
-
-        text (string): the encrypted message text
-
-        An EncryptedSubMessage object inherits from SubMessage and has two attributes:
-            self.message_text (string, determined by input text)
-            self.valid_words (list, determined using helper function load_words)
-        '''
-        pass #delete this line and replace with your code here
+        SubMessage.__init__(self, text)
 
     def decrypt_message(self):
-        '''
-        Attempt to decrypt the encrypted message 
-        
-        Idea is to go through each permutation of the vowels and test it
-        on the encrypted message. For each permutation, check how many
-        words in the decrypted text are valid English words, and return
-        the decrypted message with the most English words.
-        
-        If no good permutations are found (i.e. no permutations result in 
-        at least 1 valid word), return the original string. If there are
-        multiple permutations that yield the maximum number of words, return any
-        one of them.
+        # Variables to store decrypt result and permutation list
+        best_score = 0
+        best_permutation = ''
+        permutation_list = get_permutations(VOWELS_LOWER)
 
-        Returns: the best decrypted message    
-        
-        Hint: use your function from Part 4A
-        '''
-        pass #delete this line and replace with your code here
-    
+        # Start going through the permutation list and decrypt
+        for e in permutation_list:
+            # Score tracking and get the iteration message
+            itr_score = 0
+            message = self.apply_transpose(self.build_transpose_dict(e)).split(" ")
+            
+            # Start scoring
+            for char in message:
+                if is_word(self.valid_words, char):
+                    itr_score += 1
+
+            # Update best score by far
+            if itr_score > best_score:
+                best_score = itr_score
+                best_permutation = e
+
+        # Now use best permutation found to decrypt the message, if found any
+        if best_score:
+            return self.apply_transpose(self.build_transpose_dict(best_permutation))
+
+        # Else just keep the message as is
+        else:
+            return self.get_message_text()
 
 if __name__ == '__main__':
 
