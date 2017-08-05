@@ -1,6 +1,6 @@
 # Problem Set 4B
 # Name: Hoang Nguyen
-# Time Spent: 45
+# Time Spent: 1:30
 
 import string
 
@@ -78,19 +78,11 @@ class Message(object):
         # For return
         shift_dict = {}
 
-        # Cipher upper case first
-        for i in range(len(string.ascii_uppercase)):
-            cipher = i + shift
-            if (cipher > 25):
-                cipher -= 26
-            shift_dict[string.ascii_uppercase[i]] = string.ascii_uppercase[cipher]
-
-        # Then cipher lower case
+        # Cipher lower and upper case simultanously
         for i in range(len(string.ascii_lowercase)):
-            cipher = i + shift
-            if (cipher > 25):
-                cipher -= 26
+            cipher = (i + shift) % 26
             shift_dict[string.ascii_lowercase[i]] = string.ascii_lowercase[cipher]
+            shift_dict[string.ascii_uppercase[i]] = string.ascii_uppercase[cipher]
 
         # Return and terminate
         return shift_dict
@@ -143,34 +135,64 @@ class PlaintextMessage(Message):
 
 
 class CiphertextMessage(Message):
+    # Class initialize, basically take everything from message
     def __init__(self, text):
         Message.__init__(self, text)
 
+    # Brute force decryption
     def decrypt_message(self):
-        '''
-        Decrypt self.message_text by trying every possible shift value
-        and find the "best" one. We will define "best" as the shift that
-        creates the maximum number of real words when we use apply_shift(shift)
-        on the message text. If s is the original shift value used to encrypt
-        the message, then we would expect 26 - s to be the best shift value 
-        for decrypting it.
+        # Variable to store the best shift value and result
+        best_shift = 0
+        best = 0
 
-        Note: if multiple shifts are equally good such that they all create 
-        the maximum number of valid words, you may choose any of those shifts 
-        (and their corresponding decrypted messages) to return
+        # Basically iterate through all 26 possible shift values (0-25)
+        for i in range(0,26):
+            itr_count = 0
+            shift_search = self.apply_shift(i).lower().split(" ")
 
-        Returns: a tuple of the best shift value used to decrypt the message
-        and the decrypted message text using that shift value
-        '''
-        pass #delete this line and replace with your code here
+            # Clean up the split list first
+            for e in shift_search:
+                e = e.strip(" !@#$%^&*()-_+={}[]|\:;'<>?,./\"")
+
+            # Start checking points
+            for e in shift_search:
+                if e in self.valid_words:
+                    itr_count += 1
+
+            # Storing our result here
+            if itr_count > best:
+                best = itr_count
+                best_shift = i
+
+            # Break out if we have matched every word
+            if best == len(shift_search):
+                break
+
+        # Return the decrypted message and terminate
+        return self.apply_shift(best_shift)
 
 if __name__ == '__main__':
 
-    test = PlaintextMessage(get_story_string(), 1)
-    print(test.get_message_text_encrypted())
-    test.change_shift(-3)
-    print('New story man')
-    print(test.get_message_text_encrypted())
+    # # Test 1 for PlaintextMessage class
+    # test1 = PlaintextMessage(string.ascii_lowercase, 12)
+    # print(test1.get_message_text_encrypted())
+    # test1.change_shift(-1)
+    # print(test1.get_message_text_encrypted())
+
+    # # Test 2 for PlaintextMessage class
+    # text2 = 'mnopqrstuvwxyzabcdefghijkl'
+    # test2 = PlaintextMessage(text2, -12)
+    # print(test2.get_message_text_encrypted())
+
+    # # Test 3 for PlaintextMessage ckass
+    # text3 = '“Stop!” he yelled. “You’ve got two flat tires!”'
+    # test3 = PlaintextMessage(text3, 4)
+    # print(test3.get_message_text_encrypted())
+
+    # Test 4 for CiphertextMessage class
+    test4 = CiphertextMessage(get_story_string())
+    print(test4.decrypt_message())
+
 
 #    #Example test case (PlaintextMessage)
 #    plaintext = PlaintextMessage('hello', 2)
