@@ -1,6 +1,6 @@
 # Problem Set 4C
 # Name: Hoang Nguyen
-# Time Spent: 50
+# Time Spent: 1:10
 
 import string
 from ps4a import get_permutations
@@ -17,14 +17,14 @@ def load_words(file_name):
     take a while to finish.
     '''
     
-    print("Loading word list from file...")
+    # print("Loading word list from file...")
     # inFile: file
     inFile = open(file_name, 'r')
     # wordlist: list of strings
     wordlist = []
     for line in inFile:
         wordlist.extend([word.lower() for word in line.split(' ')])
-    print("  ", len(wordlist), "words loaded.")
+    # print("  ", len(wordlist), "words loaded.")
     return wordlist
 
 def is_word(word_list, word):
@@ -118,6 +118,7 @@ class EncryptedSubMessage(SubMessage):
         best_score = 0
         best_permutation = ''
         permutation_list = get_permutations(VOWELS_LOWER)
+        # print('Permutation list:', permutation_list, '| List length:', len(permutation_list))
 
         # Start going through the permutation list and decrypt
         for e in permutation_list:
@@ -155,4 +156,22 @@ if __name__ == '__main__':
     enc_message = EncryptedSubMessage(message.apply_transpose(enc_dict))
     print("Decrypted message:", enc_message.decrypt_message())
      
-    #TODO: WRITE YOUR TEST CASES HERE
+    # Test 1:
+    text1 = SubMessage("On the first day of Januray, he marks the begin of a new year, 'the year of Changes'.")
+    perm1 = "ieoua"
+    dict1 = text1.build_transpose_dict(perm1)
+    print("Original message:", text1.get_message_text(), "Permutation:", perm1)
+    print("Expected encryption:", "Un the forst diy uf Jinariy, he mirks the begon uf i new yeir, 'the yeir uf Chinges'.")
+    print("Actual encryption:", text1.apply_transpose(dict1))
+    enc_text1 = EncryptedSubMessage(text1.apply_transpose(dict1))
+    print("Decrypted message:", enc_text1.decrypt_message())
+
+    # Test 2:
+    text2 = SubMessage('Mister Owl has just woke up, from his long nap.')
+    perm2 = "oeuai"
+    dict2 = text2.build_transpose_dict(perm2)
+    print("Original message:", text2.get_message_text(), "Permutation:", perm2)
+    print("Expected encryption:", 'Muster Awl hos jist wake ip, fram hus lang nop.')
+    print("Actual encryption:", text2.apply_transpose(dict2))
+    enc_text2 = EncryptedSubMessage(text2.apply_transpose(dict2))
+    print("Decrypted message:", enc_text2.decrypt_message())
