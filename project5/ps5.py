@@ -95,8 +95,35 @@ class Trigger(object):
 # Problem 2
 # TODO: PhraseTrigger
 
+# Super class phrase trigger, with helper function to cleanup
+# an input string
+class PhraseTrigger(Trigger):
+    # Take a string and strip off all punctutations
+    def clean_up(self, input):
+        
+        # Some storage variables
+        cleaned = ''
+        last_char = ''
+
+        # Start with lower case, then strip off punctuations
+        # and excessive space
+        lower = input.lower()
+        for char in lower:
+            cond = char == ' ' and last_char != ' '
+            if ((char not in string.punctuation) and (char != ' ')) or (cond):
+                cleaned += char
+            last_char = char
+
+        # Return cleaned string and termintate
+        return cleaned
+
+
 # Problem 3
 # TODO: TitleTrigger
+
+class TitleTrigger(PhraseTrigger):
+    def __init__(self, phrase):
+        self.phrase = phrase
 
 # Problem 4
 # TODO: DescriptionTrigger
