@@ -1,6 +1,6 @@
 # 6.0001/6.00 Problem Set 5 - RSS Feed Filter
 # Name: Hoang Nguyen
-# Time: 0:10
+# Time: 0:30
 
 import feedparser
 import string
@@ -90,40 +90,85 @@ class Trigger(object):
         # DO NOT CHANGE THIS!
         raise NotImplementedError
 
-# PHRASE TRIGGERS
-
-# Problem 2
-# TODO: PhraseTrigger
-
 # Super class phrase trigger, with helper function to cleanup
 # an input string
 class PhraseTrigger(Trigger):
-    # Take a string and strip off all punctutations
-    def clean_up(self, input):
+    # Take a string and strip off all punctutations and
+    # excessive space
+    def clean_up_text(self, input):
         
-        # Some storage variables
+        # Clean up the input by converting to lower case first
+        lower = input.lower()
+
+        # First convert all punctuations to spaces
+        converted_to_space = ''
+        for char in lower:
+            if char in string.punctuation:
+                converted_to_space += ' '
+            else:
+                converted_to_space += char
+
+        # Next remove excessive space
         cleaned = ''
         last_char = ''
-
-        # Start with lower case, then strip off punctuations
-        # and excessive space
-        lower = input.lower()
-        for char in lower:
-            cond = char == ' ' and last_char != ' '
-            if ((char not in string.punctuation) and (char != ' ')) or (cond):
+        for char in converted_to_space:
+            if ((char == ' ') and (last_char != ' ') and (last_char != '')) or (char != ' '):
                 cleaned += char
             last_char = char
 
         # Return cleaned string and termintate
         return cleaned
 
+    # Check if input is valid
+    def is_phrase_valid(self, input):
+
+        # Some storage variables
+        cleaned = ''
+        last_char = ''
+
+        # Convert the input to all lower case first,
+        # then check for excessive space and punctuations
+        lower = input.lower()
+        for char in lower:
+            cond = char == ' ' and last_char == ' '
+            if (char in string.punctuation) or (cond):
+                return False
+            last_char = char
+
+        # Terminate and return true if we have not yet terminated
+        return True
+
 
 # Problem 3
 # TODO: TitleTrigger
 
+# Trigger whenever a title match a certain phrase
 class TitleTrigger(PhraseTrigger):
+
+    # Class constructor, store the user's desired phrase
     def __init__(self, phrase):
         self.phrase = phrase
+
+    # Evaluation to fire, override the super class
+    def evaluate(self, story):
+
+        # First thing first, return false immediately
+        # if we have a bad input
+        if not self.is_phrase_valid(self.phrase):
+            return False
+
+        # Okay, phrase is good, proceed to clean up
+        title = self.clean_up_text(story.get_title())
+        phrase = self.phrase.lower()
+
+        # Check if the phrase is in the title
+        # then evaluate accordingly and terminate
+        if phrase in title:
+            return True
+        else:
+            return False
+
+
 
 # Problem 4
 # TODO: DescriptionTrigger
