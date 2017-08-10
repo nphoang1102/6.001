@@ -1,6 +1,6 @@
 # 6.0001/6.00 Problem Set 5 - RSS Feed Filter
 # Name: Hoang Nguyen
-# Time: 0:30
+# Time: 1:40
 
 import feedparser
 import string
@@ -139,17 +139,15 @@ class PhraseTrigger(Trigger):
         return True
 
 
-# Problem 3
-# TODO: TitleTrigger
 
 # Trigger whenever a title match a certain phrase
 class TitleTrigger(PhraseTrigger):
 
-    # Class constructor, store the user's desired phrase
+    # Class constructor, store the user's desired trigger phrase
     def __init__(self, phrase):
         self.phrase = phrase
 
-    # Evaluation to fire, override the super class
+    # Evaluation to trigger, override the super class
     def evaluate(self, story):
 
         # First thing first, return false immediately
@@ -164,14 +162,43 @@ class TitleTrigger(PhraseTrigger):
         # Check if the phrase is in the title
         # then evaluate accordingly and terminate
         if phrase in title:
-            return True
+            if (title.index(phrase) + len(phrase)) > len(title) - 1:
+                return True
+            elif title[title.index(phrase) + len(phrase)] not in string.ascii_lowercase:
+                return True
         else:
             return False
 
 
 
-# Problem 4
-# TODO: DescriptionTrigger
+# Trigger whenever a description match a certain phrase
+class DescriptionTrigger(PhraseTrigger):
+
+    # Class constructor, store the user's desired trigger phrase
+    def __init__(self, phrase):
+        self.phrase = phrase
+
+    # Evaluation to trigger, override the super class
+    def evaluate(self, story):
+
+        # First thing first, return false immediately
+        # if we have a bad input
+        if not self.is_phrase_valid(self.phrase):
+            return False
+
+        # Okay, phrase is good, proceed to clean up
+        description = self.clean_up_text(story.get_description())
+        phrase = self.phrase.lower()
+
+        # Check if the phrase is in the description
+        # then evaluate accordingly and terminate
+        if phrase in description:
+            if (description.index(phrase) + len(phrase)) > len(description) - 1:
+                return True
+            elif description[description.index(phrase) + len(phrase)] not in string.ascii_lowercase:
+                return True
+        else:
+            return False
 
 # TIME TRIGGERS
 
