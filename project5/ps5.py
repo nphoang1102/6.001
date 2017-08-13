@@ -1,6 +1,6 @@
 # 6.0001/6.00 Problem Set 5 - RSS Feed Filter
 # Name: Hoang Nguyen
-# Time: 2:31
+# Time: 2:50
 
 import feedparser
 import string
@@ -77,6 +77,11 @@ class NewsStory(object):
 
     def get_pubdate(self):
         return self.pubdate
+
+    # Another special snowflake here...
+    def __equal__(self, other):
+        return (self.description == other.description) and (self.title == other.title)
+
 
 
 #======================
@@ -307,7 +312,18 @@ def filter_stories(stories, triggerlist):
     # TODO: Problem 10
     # This is a placeholder
     # (we're just returning all the stories, with no filtering)
-    return stories
+    filtered = []
+    for story in stories:
+        check = True
+        for trigger in triggerlist:
+            if not trigger.evaluate(story):
+                check = False
+                break
+        if (check):
+            filtered.append(story)
+
+
+    return filtered
 
 
 
