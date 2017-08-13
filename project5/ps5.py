@@ -1,6 +1,6 @@
 # 6.0001/6.00 Problem Set 5 - RSS Feed Filter
 # Name: Hoang Nguyen
-# Time: 1:40
+# Time: 2:30
 
 import feedparser
 import string
@@ -58,7 +58,9 @@ class NewsStory(object):
         self.title = title
         self.description = description
         self.link = link
-        self.pubdate = pubdate
+
+        # This special snowflake...
+        self.pubdate = pubdate.replace(tzinfo=pytz.timezone("EST"))
 
     # Basic getters here, self explanatory
     def get_guid(self):
@@ -200,28 +202,95 @@ class DescriptionTrigger(PhraseTrigger):
         else:
             return False
 
-# TIME TRIGGERS
 
-# Problem 5
-# TODO: TimeTrigger
-# Constructor:
-#        Input: Time has to be in EST and in the format of "%d %b %Y %H:%M:%S".
-#        Convert time from string to a datetime before saving it as an attribute.
+# Trigger based on time of article
+class TimeTrigger(Trigger):
 
-# Problem 6
-# TODO: BeforeTrigger and AfterTrigger
+    # Class constructor
+    def __init__(self, time):
+
+        # Setup the standard time format
+        time_format = "%d %b %Y %H:%M:%S"
+
+        # Add exceptions here in case of erronous strings
+        try:
+            self.time = datetime.strptime(time, time_format)
+
+            # Replace with EST timezone
+            self.time = self.time.replace(tzinfo=pytz.timezone("EST"))
+        except ValueError:
+            print('Invalid input, please try again')
 
 
-# COMPOSITE TRIGGERS
 
-# Problem 7
-# TODO: NotTrigger
+# Trigger anything happened before the set date
+class BeforeTrigger(TimeTrigger):
 
-# Problem 8
-# TODO: AndTrigger
+    # Class constructor, inherit from super class
+    def __init__(self, time):
+        TimeTrigger.__init__(self, time)
 
-# Problem 9
-# TODO: OrTrigger
+    # Override super class evaluate function, return
+    # true if the event is before the set date
+    def evaluate(self, story):
+        if self.time > story.pubdate:
+            return True
+        return False
+
+
+# Trigger anything happened after the set date
+class AfterTrigger(TimeTrigger):
+
+    # Class constructor, inherit from super class
+    def __init__(self, time):
+        TimeTrigger.__init__(self, time)
+
+    # Override super class evaluate function, return
+    # true if the event is after the set date
+    def evaluate(self, story):
+        if self.time < story.pubdate:
+            return True
+        return False
+
+
+# Composite NOT trigger
+class NotTrigger(Trigger):
+
+    # Class constructor, take a trigger
+    def __init__(self, trigger):
+        self.trigger = trigger
+
+    # Override the superclass evaluate function,
+    # invert the output of trigger evaluate function
+    def evaluate(self, story):
+        return not self.trigger.evaluate(story)
+
+# Composite AND trigger
+class AndTrigger(Trigger):
+
+    # Class constructor, take 2 triggers
+    def __init__(self, trig1, trig2):
+        self.trig1 = trig1
+        self.trig2 = trig2
+
+    # Override the superclass evaluate function,
+    # take the and logic of the two input triggers
+    def evaluate(self, story):
+        return self.trig1.evaluate(story) and self.trig2.evaluate(story)
+
+
+# Composite OR trigger
+class OrTrigger(Trigger):
+
+    # Class constructor, take 2 triggers
+    def __init__(self, trig1, trig2):
+        self.trig1 = trig1
+        self.trig2 = trig2
+
+    # Override the superclass evaluate function,
+    # take the or logic of the two input triggers
+    def evaluate(self, story):
+        return self.trig1.evaluate(story) or self.trig2.evaluate(story)
 
 
 #======================
