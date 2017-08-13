@@ -1,6 +1,6 @@
 # 6.0001/6.00 Problem Set 5 - RSS Feed Filter
 # Name: Hoang Nguyen
-# Time: 2:50
+# Time: 3:00
 
 import feedparser
 import string
@@ -302,27 +302,21 @@ class OrTrigger(Trigger):
 # Filtering
 #======================
 
-# Problem 10
+# Filter out stories that matches one trigger in the
+# intput list of triggers 
 def filter_stories(stories, triggerlist):
-    """
-    Takes in a list of NewsStory instances.
 
-    Returns: a list of only the stories for which a trigger in triggerlist fires.
-    """
-    # TODO: Problem 10
-    # This is a placeholder
-    # (we're just returning all the stories, with no filtering)
+    # Making an emtpy list for filter here
     filtered = []
+
+    # Start sorting our stories
     for story in stories:
-        check = True
         for trigger in triggerlist:
-            if not trigger.evaluate(story):
-                check = False
+            if trigger.evaluate(story):
+                filtered.append(story)
                 break
-        if (check):
-            filtered.append(story)
 
-
+    # Finish and terminate
     return filtered
 
 
