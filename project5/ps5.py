@@ -1,6 +1,6 @@
 # 6.0001/6.00 Problem Set 5 - RSS Feed Filter
 # Name: Hoang Nguyen
-# Time: 2:30
+# Time: 2:31
 
 import feedparser
 import string
