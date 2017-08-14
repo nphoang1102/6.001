@@ -363,15 +363,9 @@ def read_trigger_config(filename):
         # Very manual way of inputting all elements into trigger objects,
         # let's leave it here now until I can find a better way
         if (hasName):
-            try:
-                triggerlist.append(dict_conv[process[0]](process[1]))
-            except TypeError:
-                triggerlist.append(dict_conv[process[0]](process[1], process[2]))
+            triggerlist.append(dict_conv[process[0]](*process[1:]))
         else:
-            try:
-                process[0] = dict_conv[process[1]](process[2])
-            except TypeError:
-                process[0] = dict_conv[process[1]](process[2], process[3])
+            process[0] = dict_conv[process[1]](*process[2:])
             triggerlist.append(process[0])
         
     # Return and terminate function
@@ -385,14 +379,7 @@ def main_thread(master):
     # A sample trigger list - you might need to change the phrases to correspond
     # to what is currently in the news
     try:
-        t1 = TitleTrigger("election")
-        t2 = DescriptionTrigger("Trump")
-        t3 = DescriptionTrigger("Clinton")
-        t4 = AndTrigger(t2, t3)
-        triggerlist = [t1, t4]
-
-        # Problem 11
-        # TODO: After implementing read_trigger_config, uncomment this line 
+        # Import the trigger configuration file
         triggerlist = read_trigger_config('triggers.txt')
         
         # HELPER CODE - you don't need to understand this!

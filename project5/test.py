@@ -52,8 +52,8 @@ def time_test(input_time):
     ancient = datetime(1987, 10, 15)
     print('Evaluation result:', time > ancient)
 
-def printS(string):
-    print(string)
+def printS(s1, s2, s3):
+    print(s1, s2, s3)
 
 def addNum(n1, n2):
     print(n1+n2)
@@ -69,4 +69,4 @@ if __name__ == "__main__":
     # print("'purple    cow' validity:", is_phrase_valid('purple    cow'))
     # print("'mOoOoOoO' validity:", is_phrase_valid('mOoOoOoO'))
     # time_test('12 Oct 2016 23:59:59')
-    dict_test(['addNum', 1, 3])
+    dict_test(['print', 'What is this socery?', 'b', 'c'])
