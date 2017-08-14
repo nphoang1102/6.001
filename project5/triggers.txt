@@ -21,4 +21,4 @@ t5,AND,t2,t3
 t6,AND,t1,t4
 
 // the trigger list contains t1 and t4
-ADD,t5,t6
+OR,t5,t6

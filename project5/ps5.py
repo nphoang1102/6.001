@@ -1,6 +1,6 @@
 # 6.0001/6.00 Problem Set 5 - RSS Feed Filter
 # Name: Hoang Nguyen
-# Time: 3:00
+# Time: 4:00
 
 import feedparser
 import string
@@ -324,14 +324,9 @@ def filter_stories(stories, triggerlist):
 #======================
 # User-Specified Triggers
 #======================
-# Problem 11
+# Generate a list of triggers based on the input triggers.txt
 def read_trigger_config(filename):
-    """
-    filename: the name of a trigger configuration file
 
-    Returns: a list of trigger objects specified by the trigger configuration
-        file.
-    """
     # We give you the code to read in the file and eliminate blank lines and
     # comments. You don't need to know how it works for now!
     trigger_file = open(filename, 'r')
@@ -341,11 +336,46 @@ def read_trigger_config(filename):
         if not (len(line) == 0 or line.startswith('//')):
             lines.append(line)
 
-    # TODO: Problem 11
-    # line is the list of lines that you need to parse and for which you need
-    # to build triggers
+    # Dictionary to convert all string input to actual trigger class
+    dict_conv = {
+        'TITLE': TitleTrigger,
+        'DESCRIPTION': DescriptionTrigger,
+        'AFTER': AfterTrigger,
+        'NOT': NotTrigger,
+        'AND': AndTrigger,
+        'OR': OrTrigger,
+    }
 
-    print(lines) # for now, print it so you see what it contains!
+    # Variable for return the list of triggers
+    triggerlist = []
+
+    # Iterating through chunks in our lines
+    for chunk in lines:
+        # Seperate based on the comma and assumed all trigger has custom name
+        process = chunk.split(',')
+        hasName = False
+
+        # If we do manage to get a process, meaning there is
+        # no trigger name
+        if dict_conv.get(process[0], 0):
+            hasName = True
+        
+        # Very manual way of inputting all elements into trigger objects,
+        # let's leave it here now until I can find a better way
+        if (hasName):
+            try:
+                triggerlist.append(dict_conv[process[0]](process[1]))
+            except TypeError:
+                triggerlist.append(dict_conv[process[0]](process[1], process[2]))
+        else:
+            try:
+                process[0] = dict_conv[process[1]](process[2])
+            except TypeError:
+                process[0] = dict_conv[process[1]](process[2], process[3])
+            triggerlist.append(process[0])
+        
+    # Return and terminate function
+    return triggerlist
 
 
 
@@ -363,7 +393,7 @@ def main_thread(master):
 
         # Problem 11
         # TODO: After implementing read_trigger_config, uncomment this line 
-        # triggerlist = read_trigger_config('triggers.txt')
+        triggerlist = read_trigger_config('triggers.txt')
         
         # HELPER CODE - you don't need to understand this!
         # Draws the popup window that displays the filtered stories
@@ -420,4 +450,3 @@ if __name__ == '__main__':
     t = threading.Thread(target=main_thread, args=(root,))
     t.start()
     root.mainloop()
-
