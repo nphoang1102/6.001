@@ -223,8 +223,10 @@ class TimeTrigger(Trigger):
 
             # Replace with EST timezone
             self.time = self.time.replace(tzinfo=pytz.timezone("EST"))
+        
+        # Throw value error prompting the user to check input and try again
         except ValueError:
-            print('Invalid input, please try again')
+            print('TimeTrigger: Invalid input, please try again')
 
 
 
@@ -353,18 +355,11 @@ def read_trigger_config(filename):
     for chunk in lines:
         # Seperate based on the comma and assumed all trigger has custom name
         process = chunk.split(',')
-        hasName = False
 
-        # If we do manage to get a process, meaning there is
-        # no trigger name
-        if dict_conv.get(process[0], 0):
-            hasName = True
-        
-        # Very manual way of inputting all elements into trigger objects,
-        # let's leave it here now until I can find a better way
-        if (hasName):
+        # Assuming all inputs are correct and only 2 ways of inputing the configuration
+        try:
             triggerlist.append(dict_conv[process[0]](*process[1:]))
-        else:
+        except KeyError:
             process[0] = dict_conv[process[1]](*process[2:])
             triggerlist.append(process[0])
         
